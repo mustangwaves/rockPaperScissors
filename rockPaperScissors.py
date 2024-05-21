@@ -1,33 +1,40 @@
 import random
 
-computerChoice = random.randint(1,3)
+file_path = '/home/aaronluebbert/Personal Projects/External Project Files/balance.txt'
 
-print(computerChoice)
+try:
+    with open(file_path, 'r') as balanceFile:
+        balance_str = balanceFile.read().strip()
+        print("Your balance is:", repr(balance_str))  # Print the contents for debugging
+        balance = int(balance_str) if balance_str else 0  # Set default balance to 0 if file is empty
+except FileNotFoundError:
+    balance = 0  # Set default balance to 0 if file doesn't exist
 
-if computerChoice == 1:
-    computerChoice = 'Rock'
-elif computerChoice == 2:
-    computerChoice = 'Paper'
-elif computerChoice == 3:
-    computerChoice = 'Scissors'
+def write_balance(balance):
+    with open(file_path, 'w') as balanceFile:
+        balanceFile.write(str(balance))
 
+balance = int(balance)
+
+# gets computers choice and converts it to rock, paper, or scissors
+
+computerChoice = random.choice(['Rock','Paper','Scissors'])
+
+bet = int(input('How much would you like to bet?'))
 playerChoice = input('Rock, Paper, or Scissors?')
 
-if playerChoice == 'Rock' and computerChoice == 'Rock':
-    print("The computer chose Rock. It's a draw!")
-elif playerChoice == 'Rock' and computerChoice == 'Paper':
-    print("The computer chose Paper. You lose.")
-elif playerChoice == 'Rock' and computerChoice == 'Scissors':
-    print("The computer chose Scissors. You win!")
-elif playerChoice == 'Paper' and computerChoice == 'Rock':
-    print("The computer chose Rock. You win!")
-elif playerChoice == 'Paper' and computerChoice == 'Paper':
-    print("The computer chose Paper. It's a draw!")
-elif playerChoice == 'Paper' and computerChoice == 'Scissors':
-    print("The computer chose Scissors. You lose.")
-elif playerChoice == 'Scissors' and computerChoice == 'Rock':
-    print("The computer chose Rock. You lose.")
-elif playerChoice == 'Scissors' and computerChoice == 'Paper':
-    print("The computer chose Paper. You win!")
-elif playerChoice == 'Scissors' and computerChoice == 'Scissors':
-    print("The computer chose Scissors. It's a draw!")
+# prints out results of the game
+
+if playerChoice == computerChoice:
+    print(f"the computer chose {computerChoice}. It's a draw!")
+elif (playerChoice == 'Rock' and computerChoice == 'Scissors') or \
+    (playerChoice == 'Paper' and computerChoice == 'Rock') or \
+    (playerChoice == 'Scissors' and computerChoice == 'Paper'):
+        print(f"The computer chose {computerChoice}. You win!")
+        balance += bet
+else:
+    print(f"The computer chose {computerChoice}. You lose!")
+    balance -= bet
+
+print(f'Your new balance is: {balance}')
+write_balance(balance)
